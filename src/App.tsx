@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, type ReactNode } from 'react';
 import { 
   Phone, 
   Search, 
@@ -180,7 +180,14 @@ const blogData = [
 
 // --- Components ---
 
-const Button = ({ children, variant = "primary", className = "", onClick }: any) => {
+interface ButtonProps {
+  children: ReactNode;
+  variant?: "primary" | "outline" | "white" | "nav";
+  className?: string;
+  onClick?: () => void;
+}
+
+const Button = ({ children, variant = "primary", className = "", onClick }: ButtonProps) => {
   const baseStyle = "px-6 py-2 text-sm font-semibold transition-colors duration-200 uppercase tracking-wide";
   const variants = {
     primary: "bg-blue-600 text-white hover:bg-blue-700",
@@ -190,13 +197,22 @@ const Button = ({ children, variant = "primary", className = "", onClick }: any)
   };
   
   return (
-    <button onClick={onClick} className={`${baseStyle} ${variants[variant as keyof typeof variants]} ${className}`}>
+    <button onClick={onClick} className={`${baseStyle} ${variants[variant]} ${className}`}>
       {children}
     </button>
   );
 };
 
-const Card = ({ date, title, subtitle, img, children, moreText }: any) => (
+interface CardProps {
+  date?: string;
+  title: string;
+  subtitle?: string;
+  img?: string;
+  children?: ReactNode;
+  moreText?: string;
+}
+
+const Card = ({ date, title, subtitle, img, children, moreText }: CardProps) => (
   <div className="bg-white p-4 shadow-sm border border-gray-100 hover:shadow-md transition-shadow flex flex-col h-full">
     <div className="text-xs text-gray-400 mb-2">{date}</div>
     <h3 className="text-blue-600 font-bold text-lg mb-2">{title}</h3>
@@ -212,6 +228,14 @@ const Card = ({ date, title, subtitle, img, children, moreText }: any) => (
 );
 
 // --- Main Application ---
+const NavLink = ({ viewName, label, currentView, onClick }: { viewName: string, label: string, currentView: string, onClick: (view: string) => void }) => (
+  <button 
+    onClick={() => onClick(viewName)}
+    className={`text-sm font-bold uppercase tracking-tight hover:text-red-600 transition-colors ${currentView === viewName ? 'text-red-600' : 'text-gray-800'}`}
+  >
+    {label}
+  </button>
+);
 
 export default function App() {
   const [lang, setLang] = useState<'de' | 'en'>('de');
@@ -225,14 +249,7 @@ export default function App() {
     window.scrollTo(0, 0);
   };
 
-  const NavLink = ({ viewName, label }: { viewName: string, label: string }) => (
-    <button 
-      onClick={() => handleNavClick(viewName)}
-      className={`text-sm font-bold uppercase tracking-tight hover:text-red-600 transition-colors ${view === viewName ? 'text-red-600' : 'text-gray-800'}`}
-    >
-      {label}
-    </button>
-  );
+
 
   return (
     <div className="min-h-screen font-sans bg-white text-gray-800 flex flex-col">
@@ -271,14 +288,14 @@ export default function App() {
 
           {/* Desktop Nav */}
           <nav className="hidden xl:flex space-x-6 pb-1">
-            <NavLink viewName="home" label={t.nav.home} />
-            <NavLink viewName="news" label={t.nav.news} />
-            <NavLink viewName="learn" label={t.nav.learn} />
-            <NavLink viewName="exams" label={t.nav.exams} />
-            <NavLink viewName="corporate" label={t.nav.corporate} />
-            <NavLink viewName="about" label={t.nav.about} />
-            <NavLink viewName="contact" label={t.nav.contact} />
-            <NavLink viewName="blog" label={t.nav.blog} />
+            <NavLink viewName="home" label={t.nav.home} currentView={view} onClick={handleNavClick} />
+            <NavLink viewName="news" label={t.nav.news} currentView={view} onClick={handleNavClick} />
+            <NavLink viewName="learn" label={t.nav.learn} currentView={view} onClick={handleNavClick} />
+            <NavLink viewName="exams" label={t.nav.exams} currentView={view} onClick={handleNavClick} />
+            <NavLink viewName="corporate" label={t.nav.corporate} currentView={view} onClick={handleNavClick} />
+            <NavLink viewName="about" label={t.nav.about} currentView={view} onClick={handleNavClick} />
+            <NavLink viewName="contact" label={t.nav.contact} currentView={view} onClick={handleNavClick} />
+            <NavLink viewName="blog" label={t.nav.blog} currentView={view} onClick={handleNavClick} />
           </nav>
 
           {/* Mobile Menu Button */}
@@ -291,14 +308,14 @@ export default function App() {
         {mobileMenuOpen && (
           <div className="xl:hidden bg-gray-50 p-4 space-y-4 shadow-inner">
             <div className="flex flex-col space-y-4">
-              <NavLink viewName="home" label={t.nav.home} />
-              <NavLink viewName="news" label={t.nav.news} />
-              <NavLink viewName="learn" label={t.nav.learn} />
-              <NavLink viewName="exams" label={t.nav.exams} />
-              <NavLink viewName="corporate" label={t.nav.corporate} />
-              <NavLink viewName="about" label={t.nav.about} />
-              <NavLink viewName="contact" label={t.nav.contact} />
-              <NavLink viewName="blog" label={t.nav.blog} />
+              <NavLink viewName="home" label={t.nav.home} currentView={view} onClick={handleNavClick} />
+              <NavLink viewName="news" label={t.nav.news} currentView={view} onClick={handleNavClick} />
+              <NavLink viewName="learn" label={t.nav.learn} currentView={view} onClick={handleNavClick} />
+              <NavLink viewName="exams" label={t.nav.exams} currentView={view} onClick={handleNavClick} />
+              <NavLink viewName="corporate" label={t.nav.corporate} currentView={view} onClick={handleNavClick} />
+              <NavLink viewName="about" label={t.nav.about} currentView={view} onClick={handleNavClick} />
+              <NavLink viewName="contact" label={t.nav.contact} currentView={view} onClick={handleNavClick} />
+              <NavLink viewName="blog" label={t.nav.blog} currentView={view} onClick={handleNavClick} />
             </div>
           </div>
         )}
